@@ -1,15 +1,23 @@
 % X : Vector
-% N = 1 Norma 1
-% N = 2 Norma 2
-% N = 3 Norma MAX
+% N : 1, 2, 3, ... , Inf
 
 function Y = Norm(X,N)
-if (N == 1)
-    Y = sum(abs(X));
-elseif (N == 2)
-    Y = sqrt(sum(X.^2));
-elseif (N == 3)
-    Y = max(abs(X));
-else 
-    disp(' Error ')
+
+if nargin < 2,
+    N   = 2;    
+    if nargin < 1,
+        help Norm;
+        return;
+    end
+end
+
+switch N,
+    case 1,
+        Y = sum(abs(X));
+    case 2,
+        Y = sqrt(sum(X.^2));
+    case inf,
+        Y = max(abs(X));
+    otherwise,
+        Y = (sum(X.^N))^(1/N);
 end
