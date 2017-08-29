@@ -3,14 +3,6 @@
 
 function Y = Norm(X,N)
 
-if nargin < 2,
-    N   = 2;    
-    if nargin < 1,
-        help Norm;
-        return;
-    end
-end
-
 switch N,
     case 1,
         Y = sum(abs(X));
@@ -18,6 +10,8 @@ switch N,
         Y = sqrt(sum(X.^2));
     case inf,
         Y = max(abs(X));
+    case -inf
+        Y = min(abs(X));
     otherwise,
         Y = (sum(X.^N))^(1/N);
 end
