@@ -6,8 +6,6 @@ function Y = Norm(X,N)
 switch N,
     case 1,
         Y = sum(abs(X));
-    case 2,
-        Y = sqrt(sum(X.^2));
     case inf,
         Y = max(abs(X));
     case -inf
