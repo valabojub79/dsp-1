@@ -1,15 +1,14 @@
-%% BENCHMARK TEST FUNCTIONS FOR OPTIMISATION METHODS
-% -*- mode: matlab; coding: iso-8859-1; -*-
+%% BFM:BENCHMARK TEST FUNCTIONS FOR OPTIMISATION METHODS
 % Copyright (c) Jorge M. Cruz-Duarte. All rights reserved.
 %
 % Based in A Literature Survey of Benchmark Functions For Global
 %          Optimization Problems, Jamil & Yang (2013)
 %
-% - Run "BTFFGO" at the command window to see all functions
-% - Run "F = BTFFGO(NoF)" to get the NoF-th function as a handle function
-% - Run "[F,Details] = BTFFGO(NoF)" to get more information about the
+% - Run "bfm" at the command window to see all functions
+% - Run "F = bfm(NoF)" to get the NoF-th function as a handle function
+% - Run "[F,Details] = bfm(NoF)" to get more information about the
 %   function
-% - Run "[F,Details] = BTFFGO(NoF,'plot')" to plot the function
+% - Run "[F,Details] = bfm(NoF,'plot')" to plot the function
 %
 % Enjoy it! XD bfm
 function [F, info] = bfm(FID,varargin)
