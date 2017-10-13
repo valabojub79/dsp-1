@@ -51,7 +51,7 @@ axis([-10 10 -1 1]);
 dt = 0.001;
 t = 0:dt:2.3*2*pi;
 x = cos(t);
-subplot(211), plot(t,x);
+figure, subplot(211), plot(t,x);
 
 % Obtain FFT
 f = fftshift(fft(x));
@@ -289,3 +289,133 @@ dy = conv(x,dw);
 subplot(311), plot(t,x);
 subplot(312), plot(t,y(1:end-numel(w)+1));
 subplot(313), plot(t,dy(1:end-numel(dw)+1));
+
+
+%% Example 16
+I = (rgb2gray(imread('image.png')));
+figure, imshow(I);
+
+Ix = imnoise(I,'gaussian');
+figure, imshow(Ix);
+
+Iy = im2double(I);
+
+K = @(sig,x,y) exp(-(x.^2+y.^2)/2/sig^2);
+[dx,dy] = meshgrid([linspace(-5,5,3)]);
+
+% Primero
+sigma = 0.25;
+weight = K(sigma,dx,dy)/sum(sum(K(sigma,dx,dy)));
+
+dwx = -dx.*weight/sigma^2;
+dwy = -dy.*weight/sigma^2;
+
+Iyx=conv2(Iy,dwx,'same');
+Iyy=conv2(Iy,dwy,'same');
+
+dIy = sqrt(Iyx.^2 + Iyy.^2);
+dIy_norm = (dIy - min(min(dIy)))/( max(max(dIy)) -  min(min(dIy)));
+
+figure, imshow(mat2gray(dIy_norm));
+title(sprintf('\\sigma = %.2f',sigma));
+
+% Segundo
+sigma = 1.5;
+weight = K(sigma,dx,dy)/sum(sum(K(sigma,dx,dy)));
+
+dwx = -dx.*weight/sigma^2;
+dwy = -dy.*weight/sigma^2;
+
+Iyx=conv2(Iy,dwx,'same');
+Iyy=conv2(Iy,dwy,'same');
+
+dIy = sqrt(Iyx.^2 + Iyy.^2);
+dIy_norm = (dIy - min(min(dIy)))/( max(max(dIy)) -  min(min(dIy)));
+
+figure, imshow(mat2gray(dIy_norm));
+title(sprintf('\\sigma = %.2f',sigma));
+
+% Tercero
+sigma = 2;
+weight = K(sigma,dx,dy)/sum(sum(K(sigma,dx,dy)));
+
+dwx = -dx.*weight/sigma^2;
+dwy = -dy.*weight/sigma^2;
+
+Iyx=conv2(Iy,dwx,'same');
+Iyy=conv2(Iy,dwy,'same');
+
+dIy = sqrt(Iyx.^2 + Iyy.^2);
+dIy_norm = (dIy - min(min(dIy)))/( max(max(dIy)) -  min(min(dIy)));
+
+figure, imshow(mat2gray(dIy_norm));
+title(sprintf('\\sigma = %.2f',sigma));
+
+
+%% addition
+
+dIy_norm = (dIy - min(min(dIy)))/( max(max(dIy)) -  min(min(dIy)));
+dIy_umb = dIy_norm > 0.12;
+
+figure, imshow(mat2gray(dIy_umb));
+title(sprintf('\\sigma = %.2f',sigma));
+
+%% Example 17   
+s = 1;
+
+[x,y] = meshgrid([-s 0 s]);
+
+G = @(x,y,sigma) exp(-(x.^2 + y.^2)/2/sigma^2);
+
+wG = round(G(x,y,s)*3);
+
+dwGx = -x.*wG;
+dwGy = -y.*wG;
+
+%% Example 18 : 1 to 
+
+% 1. Leer sonido
+[f_,fs] = audioread('sonidito.wav');
+Ts = 1/fs;
+samples_ = numel(f_);
+time_ = 0 : Ts : Ts*(samples_-1);
+
+% 2. Tomar una muestra
+cliptime = 10;
+time = time_(time_ <= cliptime);
+s = f_(time_ <= cliptime);
+samples = numel(s);
+
+% 3. Reproduce
+pOrig = audioplayer(s,fs);
+%pOrig.play;
+
+% 4. Muestra la señal y su espectro
+figure; 
+subplot(211),
+stem(time, s); xlabel('time [s]'), ylabel('amplitude')
+
+ds = fs / samples;
+w = (-(samples/2):(samples/2)-1)*ds;
+y = fft(s, samples) / samples; 
+y2 = fftshift(y);
+subplot(212), plot(w,abs(y2));
+xlabel('frequency [Hz]'), ylabel('amplitude')
+
+% 5. Agregar ruido
+s_n  = awgn(s,10,'measured');
+pOrig = audioplayer(s_n,fs);
+%pOrig.play;
+
+% 6. Muestra la señal ruidosa y su espectro
+figure; 
+subplot(211),
+stem(time, s_n); xlabel('time [s]'), ylabel('amplitude')
+
+ds = fs / samples;
+w = (-(samples/2):(samples/2)-1)*ds;
+y = fft(s_n, samples) / samples; 
+y2 = fftshift(y);
+subplot(212), plot(w,abs(y2));
+xlabel('frequency [Hz]'), ylabel('amplitude')
+
